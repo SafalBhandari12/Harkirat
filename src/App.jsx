@@ -1,30 +1,36 @@
-import { useMemo, useState } from "react";
+import { memo, useCallback, useState } from "react";
+
+// use callback is used to prevent re-rendering of child which requires the function as the dependencies from the parent component.
 
 function App() {
-  const [value, setValue] = useState("");
-  const [ctvalue, setCtvalue] = useState(0);
+  const [count, setCount] = useState(0);
 
-  const intValue = parseInt(value);
-
-  const sum = useMemo(() => {
-    console.log("hello");
-    return (intValue * (intValue + 1)) / 2;
-  }, [value]);
-
+  const onClick = useCallback(() => {
+    console.log("child clicked");
+  }, []);
+  
   return (
-
-    <>
-      <input
-        type='text'
-        value={value}
-        onChange={(e) => {
-          setValue(e.target.value);
+    <div>
+      <Child onClick={onClick} />
+      <button
+        onClick={() => {
+          setCount(count + 1);
         }}
-      />
-      <p>Sum is {sum}</p>
-      <button onClick={() => setCtvalue(ctvalue + 1)}>Click {ctvalue}</button>
-    </>
+      >
+        Click me {count}
+      </button>
+    </div>
   );
 }
+
+const Child = memo(({ onClick }) => {
+  console.log("child render");
+
+  return (
+    <div>
+      <button onClick={onClick}>Button clicked</button>
+    </div>
+  );
+});
 
 export default App;
