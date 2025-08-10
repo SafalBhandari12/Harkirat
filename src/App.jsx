@@ -1,36 +1,45 @@
-import { memo, useCallback, useState } from "react";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import React, { Suspense } from "react";
 
-// use callback is used to prevent re-rendering of child which requires the function as the dependencies from the parent component.
+const Dashboard = lazy(
+  () =>
+    new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(import("./pages/Dashboard"));
+      }, 3000);
+    })
+);
+const Landing = React.lazy(() => import("./pages/Landing"));
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  const onClick = useCallback(() => {
-    console.log("child clicked");
-  }, []);
-  
   return (
     <div>
-      <Child onClick={onClick} />
-      <button
-        onClick={() => {
-          setCount(count + 1);
-        }}
-      >
-        Click me {count}
-      </button>
+      <BrowserRouter>
+        <Appbar />
+        <Routes>
+          <Route
+            path='/dashboard'
+            element={
+              <Suspense fallback={"Loading..."}>
+                <Dashboard />
+              </Suspense>
+            }
+          />
+          <Route path='/' element={<Landing />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
 
-const Child = memo(({ onClick }) => {
-  console.log("child render");
+export default App;
 
+function Appbar() {
+  const navigate = useNavigate();
   return (
     <div>
-      <button onClick={onClick}>Button clicked</button>
+      <button onClick={() => navigate("/dashboard")}>Dashboard</button>
+      <button onClick={() => navigate("/")}>Landing</button>
     </div>
   );
-});
-
-export default App;
+}
