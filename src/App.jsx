@@ -1,67 +1,85 @@
+import { useState } from "react";
+import {
+  filterAtom,
+  filteredTodosSelector,
+  todosAtom,
+} from "./store/atoms/todos";
 import {
   RecoilRoot,
   useRecoilState,
   useRecoilValue,
   useSetRecoilState,
 } from "recoil";
-import { countAtom, evenSelector } from "./store/atoms/count";
-import { useMemo } from "react";
 
+/*
+2 input boxes (title,description) => atom
+button
+todos => atom
+filter (gym) => atom
+selector (the current set of todos)
+*/
 function App() {
   return (
-    <div>
-      <RecoilRoot>
-        <Count />
-      </RecoilRoot>
-    </div>
+    <RecoilRoot>
+      <Todos />
+    </RecoilRoot>
   );
 }
 
-function Count() {
-  console.log("Re-render");
+function Todos() {
+  const [titleValue, setTitleValue] = useState("");
+  const [descriptionValue, setDescriptionValue] = useState("");
+
+  const [todos, setTodos] = useRecoilState(todosAtom);
+  const [filterText, setFilterText] = useRecoilState(filterAtom);
+
+  const filterTodos = useRecoilValue(filteredTodosSelector);
+
   return (
-    <div>
-      <CountRenderer />
-      <Buttons />
-      <IsEven />
-    </div>
-  );
-}
-
-function IsEven() {
-  const isEven = useRecoilValue(evenSelector);
-  return <>{isEven ? <div>It is even</div> : <div></div>}</>;
-}
-
-function CountRenderer() {
-  const count = useRecoilValue(countAtom);
-  return <div>{count}</div>;
-}
-
-function Buttons() {
-  const setCount = useSetRecoilState(countAtom);
-  return (
-    <div>
-      <button
-        onClick={() => {
-          setCount((count) => {
-            return count + 1;
-          });
-        }}
-      >
-        Increase
-      </button>
-
-      <button
-        onClick={() => {
-          setCount((count) => {
-            return count - 1;
-          });
-        }}
-      >
-        Decrease
-      </button>
-    </div>
+    <>
+      <div>
+        <div className='inputDetails'>
+          <input
+            type='text'
+            value={titleValue}
+            onChange={(e) => {
+              setTitleValue(e.target.value);
+            }}
+          />
+          <input
+            type='text'
+            value={descriptionValue}
+            onChange={(e) => {
+              setDescriptionValue(e.target.value);
+            }}
+          />
+          <button
+            onClick={() => {
+              setTodos((todos) => [
+                ...todos,
+                { title: titleValue, description: descriptionValue },
+              ]);
+              setTitleValue("");
+              setDescriptionValue("");
+            }}
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+      <div>
+        <input
+          type='text'
+          value={filterText}
+          onChange={(e) => setFilterText(e.target.value)}
+        />
+      </div>
+      {filterTodos.map((todo) => (
+        <div key={Math.random()}>
+          {todo.title} {todo.description}
+        </div>
+      ))}
+    </>
   );
 }
 
