@@ -7,7 +7,6 @@ import {
   useSetRecoilState,
 } from "recoil";
 import { todosAtomFamily } from "./atoms";
-import { useEffect } from "react";
 
 function App() {
   return (
@@ -18,32 +17,16 @@ function App() {
       <Todo id={2} />
       <Todo id={2} />
       <Todo id={2} />
-      <UpdatedTodo />
     </RecoilRoot>
   );
-}
-
-function UpdatedTodo() {
-  const updateTodo = useSetRecoilState(todosAtomFamily(2));
-  useEffect(() => {
-    setTimeout(() => {
-      updateTodo({
-        id: "2",
-        title: "I  can change anything",
-        description: "I am safal",
-      });
-    }, 2000);
-  }, []);
-
-  return <div>Hello</div>;
 }
 
 function Todo({ id }) {
   const todo = useRecoilValue(todosAtomFamily(id));
   return (
     <>
-      {todo.title}
-      {todo.description}
+      {todo.todo}
+      {todo.completed}
       <br />
     </>
   );
