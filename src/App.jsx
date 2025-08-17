@@ -4,6 +4,7 @@ import {
   RecoilRoot,
   useRecoilState,
   useRecoilValue,
+  useRecoilValueLoadable,
   useSetRecoilState,
 } from "recoil";
 import { todosAtomFamily } from "./atoms";
@@ -22,14 +23,19 @@ function App() {
 }
 
 function Todo({ id }) {
-  const todo = useRecoilValue(todosAtomFamily(id));
-  return (
-    <>
-      {todo.todo}
-      {todo.completed}
-      <br />
-    </>
-  );
+  const todo = useRecoilValueLoadable(todosAtomFamily(id));
+  console.log(todo);
+  if (todo.state == "loading") {
+    return <div>Loading..</div>;
+  } else if (todo.state == "hasValue") {
+    return (
+      <>
+        {todo.contents.todo}
+        {todo.contents.completed}
+        <br />
+      </>
+    );
+  }
 }
 
 export default App;
