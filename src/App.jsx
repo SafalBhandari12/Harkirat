@@ -1,10 +1,12 @@
+import BackgroundChanger from "./pages/BackgroundChanger";
 import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (
-    <div>
-      <ProfilePage />
-    </div>
+    <>
+      {/* <ProfilePage /> */}
+      <BackgroundChanger />
+    </>
   );
 }
 export default App;
