@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 
 function useIsOnline() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -13,12 +13,3 @@ function useIsOnline() {
   console.log(isOnline);
   return { isOnline };
 }
-
-function App() {
-  const { isOnline } = useIsOnline();
-  return (
-    <div>{isOnline ? <p>Hello online user</p> : <p>Hi offline user</p>}</div>
-  );
-}
-
-export default App;
